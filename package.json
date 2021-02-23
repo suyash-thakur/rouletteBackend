@@ -4,6 +4,7 @@
   "description": "Backend for roulette game",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"./**/*.js\" --quiet",
     "lintFull": "eslint \"./**/*.js\"",
