@@ -18,6 +18,6 @@ mongoose.connect(connection_url, {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', admin);
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
     console.log('Server listening on port 3000.');
 });
