@@ -119,4 +119,16 @@ router.put('/transferMoneyPlayer', (req, res) => {
         });
     });
 });
+router.get('/areaAdmin/:id', (req, res) => {
+    console.log(req.params.id);
+    AreaAdmin.find({ masterAdmin: req.params.id }).then(areaAdmin => {
+        res.status(200).json({ areaAdmin });
+    });
+});
+
+router.get('/player/:id', (req, res) => {
+    Player.find({ areaAdmin: req.params.id }).then(player => {
+        res.status(200).json({ player: player });
+    });
+});
 module.exports = router;
