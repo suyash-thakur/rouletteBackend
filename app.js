@@ -15,6 +15,7 @@ mongoose.connect(connection_url, {
 }).catch(() => { 
     console.log("Connection failed!");
 });
+mongoose.set('useFindAndModify', false);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', admin);

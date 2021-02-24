@@ -6,6 +6,7 @@ const express = require("express"),
     router = express.Router();
 var rug = require('random-username-generator');
 var generatePassword = require('password-generator');
+
 router.get('/', (req, res) => {
     res.status(200).json({ message: 'API Working' });
 });
@@ -42,4 +43,14 @@ router.post('/createMaster', (req, res) => {
     });
 });
 
+router.put('/addCoinMaster', (req, res) => {
+    var coinAdd = req.body.coins
+    MasterAdmin.findOneAndUpdate({ _id: req.body.id }, { $inc: { 'coins': coinAdd }}, { new: true }, function (err, masterAdmin) {
+        if (err) { 
+            res.status(500).json(err);
+        } if (masterAdmin) { 
+            res.status(200).json({ message: "Coin Added", masterAdmin: masterAdmin });
+        }
+    });
+});
 module.exports = router;
