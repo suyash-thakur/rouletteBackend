@@ -80,5 +80,43 @@ router.put('/updateMasterCredential', (req, res) => {
         res.status(200).json({ message: 'Update successful', masterAdmin: masterAdmin });
     }); 
 });
+router.post('/addMoneyArea', (req, res) => {
+    AreaAdmin.findOneAndUpdate({ _id: req.body.id }, { $inc: { 'coins': req.body.coins } }, { new: true }).then(areaAdmin => {
+        MasterAdmin.findOneAndUpdate({ _id: req.body.masterId }, { $inc: { 'coins': -(req.body.coins) } }, { new: true }).then(masterAdmin => {
+            res.status(200).json({ message: 'Coin Added', areaAdmin: areaAdmin, masterAdmin: masterAdmin });
+        });
+    });
+});
+router.post('/addMoneyPlayer', (req, res) => {
+    Player.findOneAndUpdate({ _id: req.body.id }, { $inc: { 'coins': req.body.coins } }, { new: true }).then(player => {
+        AreaAdmin.findByIdAndUpdate({ _id: req.body.areaAdminId }, { $inc: { 'coins': -(req.body.coins) } }, { new: true }).then(areaAdmin => { 
+            res.status(200).json({ message: 'Coin Added', player: player, areaAdmin: areaAdmin });
+        })
+    });
+});
+router.put('/updatePlayer', async (req, res) => {
+    var isMoneyRedeem = req.body.isMoneyRollBack;
+    if (isMoneyRedeem === 'true') {
+        var player = await Player.find({ _id: req.body.playerId }).exec();
+        var coins = player[0].coins;
+        AreaAdmin.findOneAndUpdate({ _id: req.body.areaAdminId }, { $inc: { 'coins': coins } }, { new: true }).then(areaAdmin => {
+            Player.findByIdAndUpdate({ _id: req.body.playerId }, { name: req.body.name, password: req.body.password, coins: 0 }, { new: true }).then(player => {
+                res.status(200).json({ message: 'Player Updated', player: player, areaAdmin: areaAdmin });
+            });
+        });
+    } else { 
+        Player.findByIdAndUpdate({ _id: req.body.playerId }, { name: req.body.name, password: req.body.password }, { new: true }).then(player => {
+            res.status(200).json({ message: 'Player Updated', player: player });
+        });
+    }
+});
 
+router.put('/transferMoneyPlayer', (req, res) => {
+    var coins = req.body.coins;
+    Player.findOneAndUpdate({ _id: req.body.payerId }, { $inc: { 'coins': -coins } }, { new: true }).then(payer => {
+        Player.findByIdAndUpdate({ _id: req.body.payeeId }, { $inc: { 'coins': coins } }, { new: true }).then(payee => {
+            res.status(200).json({ message: 'Coins Transferred', payee: payee, payer: payer });
+        });
+    });
+});
 module.exports = router;
