@@ -53,4 +53,25 @@ router.put('/addCoinMaster', (req, res) => {
         }
     });
 });
+router.get('/masterAdmin', (req, res) => {
+    MasterAdmin.find({}).then(masterAdmin => { 
+        res.status(200).json(masterAdmin);
+    })
+});
+router.post('/deleteMasterAdmin', async (req, res) => {
+    const ID = req.body.id;
+    var areaAdminIdArray = [];
+    await AreaAdmin.find({ masterAdmin: ID }).select('_id').then(areaAdmin => {
+        areaAdmin.forEach(item => {
+            areaAdminIdArray.push(item._id);
+        });
+    });
+    await Player.deleteMany({ areaAdmin: areaAdminIdArray });
+
+    AreaAdmin.deleteMany({ masterAdmin: ID }).then(areaAdmin => {
+        MasterAdmin.deleteOne({ _id: ID }).then(responce => { 
+            res.status(200).json({ message: "Master Admin deleted" });
+        });
+    });
+});
 module.exports = router;
