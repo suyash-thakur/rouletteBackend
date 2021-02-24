@@ -74,4 +74,11 @@ router.post('/deleteMasterAdmin', async (req, res) => {
         });
     });
 });
+
+router.put('/updateMasterCredential', (req, res) => {
+    MasterAdmin.findOneAndUpdate({ _id: req.body.id }, { name: req.body.name, password: req.body.password }, { new: true }).then(masterAdmin => {
+        res.status(200).json({ message: 'Update successful', masterAdmin: masterAdmin });
+    }); 
+});
+
 module.exports = router;
