@@ -56,7 +56,7 @@ router.get('/masterAdmin', (req, res) => {
     })
 });
 router.post('/deleteMasterAdmin', async (req, res) => {
-    const ID = req.body.id;
+    const ID = req.body;
     console.log(ID);
     var areaAdminIdArray = [];
     await AreaAdmin.find({ masterAdmin: ID }).select('_id').then(areaAdmin => {
