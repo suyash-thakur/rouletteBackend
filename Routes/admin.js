@@ -13,13 +13,11 @@ router.get('/', (req, res) => {
 
 router.post('/createMaster', (req, res) => {
     const masterAdmin = new MasterAdmin({
-        name: req.body.name,
         password: req.body.password
     });
     masterAdmin.save().then( async (masterAdmin) => {
         for (var i = 0; i < 30; i++) { 
             var areaAdmin = new AreaAdmin({
-                name: rug.generate(),
                 password: generatePassword(),
                 masterAdmin: masterAdmin._id
             });
@@ -27,7 +25,6 @@ router.post('/createMaster', (req, res) => {
                 var playerArray = [];
                 for (var j = 0; j < 30; j++) { 
                     var player = new Player({
-                        name: rug.generate(),
                         password: generatePassword(),
                         areaAdmin: areaAdmin._id
                     });
@@ -76,7 +73,7 @@ router.post('/deleteMasterAdmin', async (req, res) => {
 });
 
 router.put('/updateMasterCredential', (req, res) => {
-    MasterAdmin.findOneAndUpdate({ _id: req.body.id }, { name: req.body.name, password: req.body.password }, { new: true }).then(masterAdmin => {
+    MasterAdmin.findOneAndUpdate({ _id: req.body.id }, {  password: req.body.password }, { new: true }).then(masterAdmin => {
         res.status(200).json({ message: 'Update successful', masterAdmin: masterAdmin });
     }); 
 });
@@ -100,12 +97,12 @@ router.put('/updatePlayer', async (req, res) => {
         var player = await Player.find({ _id: req.body.playerId }).exec();
         var coins = player[0].coins;
         AreaAdmin.findOneAndUpdate({ _id: req.body.areaAdminId }, { $inc: { 'coins': coins } }, { new: true }).then(areaAdmin => {
-            Player.findByIdAndUpdate({ _id: req.body.playerId }, { name: req.body.name, password: req.body.password, coins: 0 }, { new: true }).then(player => {
+            Player.findByIdAndUpdate({ _id: req.body.playerId }, { password: req.body.password, coins: 0 }, { new: true }).then(player => {
                 res.status(200).json({ message: 'Player Updated', player: player, areaAdmin: areaAdmin });
             });
         });
     } else { 
-        Player.findByIdAndUpdate({ _id: req.body.playerId }, { name: req.body.name, password: req.body.password }, { new: true }).then(player => {
+        Player.findByIdAndUpdate({ _id: req.body.playerId }, {  password: req.body.password }, { new: true }).then(player => {
             res.status(200).json({ message: 'Player Updated', player: player });
         });
     }

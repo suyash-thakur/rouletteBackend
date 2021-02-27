@@ -17,6 +17,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "mongoose": "^5.11.17",
+    "nanoid": "^3.1.20",
     "nodemon": "^2.0.7",
     "password-generator": "^2.3.2",
     "random-username-generator": "^1.0.4"

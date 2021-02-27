@@ -1,10 +1,14 @@
 var mongoose = require('mongoose');
+var { nanoid } = require('nanoid');
 
 const playerSchema = mongoose.Schema({
-    name: { type: String, required: true },
+    _id: {
+        type: String,
+        default: () => nanoid(11)
+      },
     password: { type: String, required: true },
     coins: { type: Number, default: 0 },
-    areaAdmin: {type: mongoose.Schema.Types.ObjectId, ref:'AreaAdmin'}
+    areaAdmin: {type: String, ref:'AreaAdmin'}
 });
 
 module.exports = mongoose.model('Players', playerSchema);

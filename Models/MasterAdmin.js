@@ -1,7 +1,11 @@
 var mongoose = require('mongoose');
+var { nanoid } = require('nanoid');
 
 const masterAdminSchema = mongoose.Schema({
-    name: { type: String, required: true },
+    _id: {
+        type: String,
+        default: () => nanoid(11)
+      },
     password: { type: String, required: true },
     coins: { type: Number, default: 0 }
 });
