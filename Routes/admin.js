@@ -75,7 +75,7 @@ router.post('/deleteMasterAdmin', async (req, res) => {
 
 router.put('/updateMasterCredential', (req, res) => {
     MasterAdmin.findOneAndUpdate({ _id: req.body.id }, {  password: req.body.password }, { new: true }).then(masterAdmin => {
-        res.status(200).json({ message: 'Update successful', masterAdmin: masterAdmin });
+        res.status(200).json({ masterAdmin });
     }); 
 });
 router.post('/addMoneyArea', (req, res) => {
