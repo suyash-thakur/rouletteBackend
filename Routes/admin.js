@@ -36,7 +36,7 @@ router.post('/createMaster', (req, res) => {
                 });
             });
         }
-        res.status(201).json({ masterAdmin: masterAdmin });
+        res.status(201).json(masterAdmin);
     });
 });
 
