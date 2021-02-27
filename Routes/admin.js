@@ -110,11 +110,18 @@ router.put('/updatePlayer', async (req, res) => {
 
 router.put('/transferMoneyPlayer', (req, res) => {
     var coins = req.body.coins;
-    Player.findOneAndUpdate({ _id: req.body.payerId }, { $inc: { 'coins': -coins } }, { new: true }).then(payer => {
-        Player.findByIdAndUpdate({ _id: req.body.payeeId }, { $inc: { 'coins': coins } }, { new: true }).then(payee => {
-            res.status(200).json({ message: 'Coins Transferred', payee: payee, payer: payer });
-        });
+    Player.find({ _id: req.body.payerId }).select('coins').then(payeeCoin => {
+        if (payeeCoin[0].coins >= coins) { 
+            Player.findOneAndUpdate({ _id: req.body.payerId }, { $inc: { 'coins': -coins } }, { new: true }).then(payer => {
+                Player.findByIdAndUpdate({ _id: req.body.payeeId }, { $inc: { 'coins': coins } }, { new: true }).then(payee => {
+                    res.status(200).json({ message: 'Coins Transferred', payee: payee, payer: payer });
+                });
+            });
+        } else {
+            res.status(401).json({ message: 'Not enough balance' });
+        }
     });
+
 });
 router.get('/areaAdmin/:id', (req, res) => {
     console.log(req.params.id);
