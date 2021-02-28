@@ -162,13 +162,13 @@ router.post('/login', (req, res) => {
                                 res.status(200).json('Master Admin');
                             }
                             else {
-                                res.status(401).json('Wrong Password');
+                                res.status(200).json('Wrong Password');
                             }
                         } else if (SuperAdminUser === req.body.id) {
                             if (SuperAdminPass === req.body.password) {
                                 res.status(200).json('Super Admin');
                             } else {
-                                res.status(401).json('Wrong Password');
+                                res.status(200).json('Wrong Password');
                             }
                         } else {
                             console.log('res loop');
