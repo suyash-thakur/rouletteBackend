@@ -171,7 +171,8 @@ router.post('/login', (req, res) => {
                                 res.status(401).json('Wrong Password');
                             }
                         } else {
-                            res.status(401).json('Wrong ID');
+                            console.log('res loop');
+                            res.status(200).json('Wrong ID');
                         }
                     });
                 }
