@@ -126,7 +126,7 @@ router.put('/transferMoneyPlayer', (req, res) => {
 });
 router.get('/areaAdmin/:id', (req, res) => {
     console.log(req.params.id);
-    AreaAdmin.find({ masterAdmin: req.params.id }).then(areaAdmin => {
+    AreaAdmin.find({ masterAdmin: req.params.id }).select('_id', 'password', 'coins').then(areaAdmin => {
         res.status(200).json({ areaAdmin });
     });
 });
