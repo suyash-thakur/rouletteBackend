@@ -10,7 +10,8 @@ var generatePassword = require('password-generator');
 router.get('/', (req, res) => {
     res.status(200).json({ message: 'API Working' });
 });
-
+var SuperAdminUser = 'superAdm';
+var SuperAdminPass = 'superAdmPass';
 router.post('/createMaster', (req, res) => {
     const masterAdmin = new MasterAdmin({
         password: req.body.password
@@ -134,6 +135,48 @@ router.get('/areaAdmin/:id', (req, res) => {
 router.get('/player/:id', (req, res) => {
     Player.find({ areaAdmin: req.params.id }).then(player => {
         res.status(200).json({ player: player });
+    });
+});
+
+router.post('/login', (req, res) => {
+    console.log(req.body);
+    Player.find({ _id: req.body.id }).then(player => {
+        if (player.length > 0) {
+            if (player[0].password === req.body.password) {
+                res.status(200).json('Player');
+            } else {
+                res.status(401).json('Wrong Password');
+            }
+        } else {
+            AreaAdmin.find({ _id: req.body.id }).then(areaAdmin => {
+                if (areaAdmin.length > 0) {
+                    if (areaAdmin[0].password === req.body.password) {
+                        res.status(200).json('Area Admin');
+                    } else {
+                        res.status(401).json('Wrong Password');
+                    }
+                } else {
+                    MasterAdmin.find({ _id: req.body.id }).then(masterAdmin => {
+                        if (masterAdmin.length > 0) {
+                            if (masterAdmin[0].password === req.body.password) {
+                                res.status(200).json('Master Admin');
+                            }
+                            else {
+                                res.status(401).json('Wrong Password');
+                            }
+                        } else if (SuperAdminUser === req.body.id) {
+                            if (SuperAdminPass === req.body.password) {
+                                res.status(200).json('Super Admin');
+                            } else {
+                                res.status(401).json('Wrong Password');
+                            }
+                        } else {
+                            res.status(401).json('Wrong ID');
+                        }
+                    });
+                }
+            });
+        }
     });
 });
 module.exports = router;
