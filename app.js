@@ -5,6 +5,7 @@ const express = require("express"),
     mongoose = require("mongoose");
 const admin = require('./Routes/admin');
 const app = express();
+const http = require('http').Server(app);
 const connection_url = 'mongodb+srv://Admin:Admin@123@cluster0-uwias.mongodb.net/gameBackend?retryWrites=true&w=majority';
 mongoose.connect(connection_url, {
     useNewUrlParser: true,
@@ -19,6 +20,6 @@ mongoose.set('useFindAndModify', false);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', admin);
-app.listen(process.env.PORT || 3000, function () {
+http.listen(process.env.PORT || 3000, function () {
     console.log('Server listening on port 3000.');
 });
