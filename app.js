@@ -13,6 +13,8 @@ const app = express();
 var cors = require('cors');
 const http = require('http').Server(app);
 const PlayerLive = require('./Class/player');
+const Bid = require('./Class/bid');
+const Option = require('./Class/option');
 const io = require('socket.io')(http, {
     cors: {
         origin: "*",
@@ -40,14 +42,20 @@ app.use('/', admin);
 //Game Global Variable
 var players = [];
 
+
+// Game Function
+function startNewGame() { 
+
+}
 //Socket Logic
 io.on('connection', (socket) => {
+    var thisPlayerID
     console.log(socket.handshake.query.id);
     Player.find({ _id: socket.handshake.query.id }).then(player => {
         if (player) {
             var playerLive = new PlayerLive(player[0]._id, player[0].coins);
             players[playerLive.id] = playerLive;
-            console.log(players);
+            thisPlayerID = playerLive.id;
 
             socket.emit('connected', {message: 'Connected'});
         } else { 
@@ -61,6 +69,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', function () {
         console.log('Player Disconnected');
+        delete players[thisPlayerID];
     });
 
 });
