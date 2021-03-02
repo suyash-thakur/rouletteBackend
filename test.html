@@ -15,5 +15,8 @@
     socket.on("connect", () => {
   console.log(socket.id); 
 });
+socket.on("timer", (timer) => {
+  console.log(timer)
+});
   </script>
 </html>

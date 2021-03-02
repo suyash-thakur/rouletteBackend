@@ -41,13 +41,24 @@ app.use('/', admin);
 
 //Game Global Variable
 var players = [];
+var countdown = 1000;
+var counting = false;
 
 
 // Game Function
 function startNewGame() { 
+    players = [];
+    countdown = 1000;
+    counting = true;
 
 }
 //Socket Logic
+setInterval(function () {
+    if (countdown <= 0) return;
+    if (!counting) return;
+    countdown--;
+    io.sockets.emit('timer', { countdown: countdown })
+}, 1000);
 io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query.id);
