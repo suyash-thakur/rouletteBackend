@@ -43,6 +43,7 @@ app.use('/', admin);
 var players = [];
 var countdown = 1000;
 var counting = false;
+var table = [];
 
 
 // Game Function
@@ -50,7 +51,19 @@ function startNewGame() {
     players = [];
     countdown = 1000;
     counting = true;
-
+    for (var i = 0; i <= 36; i++) {
+        var option = new Option(i);
+        this.table.push(option);
+    }
+    this.table.push(new Option('1st 12'));
+    this.table.push(new Option('2nd 12'));
+    this.table.push(new Option('3rd 12'));
+    this.table.push(new Option('Even'));
+    this.table.push(new Option('Odd'));
+    this.table.push(new Option('Black'));
+    this.table.push(new Option('Red'));
+    this.table.push(new Option('1-18'));
+    this.table.push(new Option('19-36'));
 }
 //Socket Logic
 setInterval(function () {
@@ -76,7 +89,13 @@ io.on('connection', (socket) => {
   
     });
 
-    
+    socket.on('bid', function (bid) {
+        var id = bid.id;
+        var amount = bid.value;
+        Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
+            
+        });
+    });
 
     socket.on('disconnect', function () {
         console.log('Player Disconnected');

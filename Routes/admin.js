@@ -134,7 +134,7 @@ router.get('/areaAdmin/:id', (req, res) => {
 
 router.get('/player/:id', (req, res) => {
     Player.find({ areaAdmin: req.params.id }).then(player => {
-        res.status(200).json({ player: player });
+        res.status(200).json(player);
     });
 });
 
