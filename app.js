@@ -44,30 +44,81 @@ var players = [];
 var countdown = 1000;
 var counting = false;
 var table = [];
+var isBidExpecting = false;
 
 
 // Game Function
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 function startNewGame() { 
-    players = [];
+    table = [];
     countdown = 1000;
     counting = true;
+    isBidExpecting = true;
     for (var i = 0; i <= 36; i++) {
         var option = new Option(i);
-        this.table.push(option);
+        table.push(option);
     }
-    this.table.push(new Option('1st 12'));
-    this.table.push(new Option('2nd 12'));
-    this.table.push(new Option('3rd 12'));
-    this.table.push(new Option('Even'));
-    this.table.push(new Option('Odd'));
-    this.table.push(new Option('Black'));
-    this.table.push(new Option('Red'));
-    this.table.push(new Option('1-18'));
-    this.table.push(new Option('19-36'));
+    table.push(new Option('1st 12'));
+    table.push(new Option('2nd 12'));
+    table.push(new Option('3rd 12'));
+    table.push(new Option('Even'));
+    table.push(new Option('Odd'));
+    table.push(new Option('Black'));
+    table.push(new Option('Red'));
+    table.push(new Option('1-18'));
+    table.push(new Option('19-36'));
+}
+
+function generateResult() { 
+    var index; var minValue
+    var tableValue = table;
+    tableValue.sort(function (a, b) {
+        return a.totalAmount - b.totalAmount;
+    });
+    var sortedTable = tableValue;
+    var prob = Math.random();
+    if (prob <= 0.6) {
+        for (var i = 0; i < tableValue.length; i++) {
+            if (tableValue[i].totalAmount !== 0) {
+                tableValue.splice(i, 1);
+            }
+        }
+        if (tableValue.length === 0) {
+            tableValue = sortedTable;
+             minValue = tableValue[0].totalAmount;
+            for (var j = 0; j < tableValue.length; j++) { 
+                if (tableValue[j].totalAmount !== minValue) { 
+                    tableValue.splice(j, 1);
+                }
+            }
+            index = getRandomInt(0, tableValue.length);
+            io.sockets.emit('result', { result: tableValue[index] });
+            
+        } else {
+            index = getRandomInt(0, tableValue.length);
+            io.sockets.emit('result', { result: tableValue[index] });
+        }
+    } else {
+         minValue = tableValue[0].totalAmount;
+        for (var k = 0; k < tableValue.length; k++) { 
+            if (tableValue[k].totalAmount !== minValue) { 
+                tableValue.splice(k, 1);
+            }
+        }
+        index = getRandomInt(0, tableValue.length);
+        io.sockets.emit('result', { result: tableValue[index] });
+    }
 }
 //Socket Logic
 setInterval(function () {
-    if (countdown <= 0) return;
+    if (countdown <= 0) { 
+        isBidExpecting = false;
+        return;
+    }
     if (!counting) return;
     countdown--;
     io.sockets.emit('timer', { countdown: countdown })
@@ -75,6 +126,7 @@ setInterval(function () {
 io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query.id);
+
     Player.find({ _id: socket.handshake.query.id }).then(player => {
         if (player) {
             var playerLive = new PlayerLive(player[0]._id, player[0].coins);
@@ -90,12 +142,30 @@ io.on('connection', (socket) => {
     });
 
     socket.on('bid', function (bid) {
+        if (isBidExpecting == true) {
+        
         var id = bid.id;
         var amount = bid.value;
+        var index = bid.index;
         Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
-            
+            if (player) { 
+                var newBid = new Bid(amount, id);
+                table[index].bids.push(newBid);
+                table[index].totalAmount = table[index].totalAmount + amount;
+                socket.emit('bidStatus', { message: 'Bid Placed' });
+            } else {
+                socket.emit('bidStatus', { message: 'Error Placing Bid' });
+
+            }
+           
         });
+        } else if (isBidExpecting == false) {
+            socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
+    }
+
     });
+
+
 
     socket.on('disconnect', function () {
         console.log('Player Disconnected');
