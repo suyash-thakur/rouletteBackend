@@ -41,7 +41,7 @@ app.use('/', admin);
 
 //Game Global Variable
 var players = [];
-var countdown = 1000;
+var countdown = 60;
 var counting = false;
 var table = [];
 var isBidExpecting = false;
@@ -55,7 +55,7 @@ function getRandomInt(min, max) {
 }
 function startNewGame() { 
     table = [];
-    countdown = 1000;
+    countdown = 60;
     counting = true;
     isBidExpecting = true;
     for (var i = 0; i <= 36; i++) {
@@ -81,7 +81,7 @@ function generateResult() {
     });
     var sortedTable = tableValue;
     var prob = Math.random();
-    if (prob <= 0.6) {
+    if (prob <= -6.6) {
         for (var i = 0; i < tableValue.length; i++) {
             if (tableValue[i].totalAmount !== 0) {
                 tableValue.splice(i, 1);
@@ -97,10 +97,12 @@ function generateResult() {
             }
             index = getRandomInt(0, tableValue.length);
             io.sockets.emit('result', { result: tableValue[index] });
+            startNewGame();
             
         } else {
             index = getRandomInt(0, tableValue.length);
             io.sockets.emit('result', { result: tableValue[index] });
+            startNewGame();
         }
     } else {
          minValue = tableValue[0].totalAmount;
@@ -111,18 +113,21 @@ function generateResult() {
         }
         index = getRandomInt(0, tableValue.length);
         io.sockets.emit('result', { result: tableValue[index] });
+        startNewGame();
     }
 }
 //Socket Logic
 setInterval(function () {
     if (countdown <= 0) { 
         isBidExpecting = false;
+        generateResult();
         return;
     }
     if (!counting) return;
     countdown--;
     io.sockets.emit('timer', { countdown: countdown })
 }, 1000);
+startNewGame();
 io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query.id);
@@ -145,7 +150,7 @@ io.on('connection', (socket) => {
         if (isBidExpecting == true) {
         
         var id = bid.id;
-        var amount = bid.value;
+        var amount = bid.amount;
         var index = bid.index;
         Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
             if (player) { 

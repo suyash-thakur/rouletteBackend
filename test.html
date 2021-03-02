@@ -16,7 +16,19 @@
   console.log(socket.id); 
 });
 socket.on("timer", (timer) => {
-  co
+  console.log(timer);
+});
+const bid = {
+  id: 'r1mNH5Hed74',
+  amount: 50,
+  index: 5
+}
+socket.emit('bid', bid);
+socket.on("bidStatus", (status) => {
+  console.log(status);
+});
+socket.on("result", (result) => {
+console.log(result);
 });
   </script>
 </html>
