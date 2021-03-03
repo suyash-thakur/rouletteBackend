@@ -7,6 +7,12 @@ const express = require("express"),
 var rug = require('random-username-generator');
 var generatePassword = require('password-generator');
 
+const AreaRequest = require('../Models/AreaRequest');
+const MasterRequest = require('../Models/MasterRequest');
+const SuperRequest = require('../Models/SuperRequest');
+const { request } = require("express");
+
+
 router.get('/', (req, res) => {
     res.status(200).json({ message: 'API Working' });
 });
@@ -180,4 +186,74 @@ router.post('/login', (req, res) => {
         }
     });
 });
+
+router.post('/playerRequest', async (req, res) => {
+    var areaAdminId = await Player.find({ _id: req.body.playerId }).select('areaAdmin').exec();
+    console.log(areaAdminId);
+    const areaRequest = new AreaRequest({
+        player: req.body.playerId,
+        areaAdmin: areaAdminId[0].areaAdmin
+    });
+    areaRequest.save().then(request => {
+        res.status(200).json(request);
+    });
+});
+
+router.get('/areaRequest/:id', (req, res) => {
+    AreaRequest.find({ areaAdmin: req.params.id }).then(request => { 
+        res.status(200).json(request);
+    })
+});
+
+router.put('/resolveAreaRequest/:id', (req, res) => {
+    AreaAdmin.findOneAndDelete({ _id: req.params.id }).then(request => {
+        res.status(200).json("Request Deleted");
+    });
+});
+
+router.post('/areaRequest', async (req, res) => {
+    var masterAdmin = await AreaAdmin.find({ _id: req.body.areaAdminId }).select('masterAdmin').exec();
+
+    const masterRequest = new MasterRequest({
+        areaAdmin: req.body.areaAdminId,
+        masterAdmin: masterAdmin[0].masterAdmin
+    });
+    masterRequest.save().then(request => {
+        res.status(200).json(request);
+    });
+});
+
+router.get('/masterRequest/:id', (req, res) => {
+    MasterRequest.find({ masterAdmin: req.params.id }).then(request => { 
+        res.status(200).json(request);
+    })
+});
+
+router.put('/resolveMasterRequest/:id', (req, res) => {
+    MasterRequest.findOneAndDelete({ _id: req.params.id }).then(request => {
+        res.status(200).json("Request Deleted");
+    });
+});
+
+
+router.post('/superRequest', (req, res) => {
+    const superRequest = new SuperRequest({
+        masterAdmin: req.body.masterAdminId
+    });
+    superRequest.save().then(request => {
+        res.status(200).json(request);
+    });
+});
+
+router.get('/superRequest', (req, res) => {
+    SuperRequest.find({ }).then(request => { 
+        res.status(200).json(request);
+    })
+});
+router.put('/resolveSuperRequest/:id', (req, res) => {
+    SuperRequest.findOneAndDelete({ _id: req.params.id }).then(request => {
+        res.status(200).json("Request Deleted");
+    });
+});
+
 module.exports = router;

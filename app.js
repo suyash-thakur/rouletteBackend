@@ -45,6 +45,8 @@ var countdown = 60;
 var counting = false;
 var table = [];
 var isBidExpecting = false;
+var RedIndex = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+var blackIndex = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33];
 
 
 // Game Function
@@ -62,20 +64,26 @@ function startNewGame() {
         var option = new Option(i);
         table.push(option);
     }
-    table.push(new Option('1st 12'));
-    table.push(new Option('2nd 12'));
-    table.push(new Option('3rd 12'));
-    table.push(new Option('Even'));
-    table.push(new Option('Odd'));
-    table.push(new Option('Black'));
-    table.push(new Option('Red'));
-    table.push(new Option('1-18'));
-    table.push(new Option('19-36'));
+    table.push(new Option('1st 12')); // 37
+    table.push(new Option('2nd 12')); // 38
+    table.push(new Option('3rd 12')); // 39
+    table.push(new Option('1st')); // 40
+    table.push(new Option('2nd')); // 41
+    table.push(new Option('3rd')); // 42
+    table.push(new Option('Even')); // 43
+    table.push(new Option('Odd')); // 44
+    table.push(new Option('Black')); // 45
+    table.push(new Option('Red')); // 46
+    table.push(new Option('1-18')); // 47
+    table.push(new Option('19-36')); // 48
 }
 
 function generateResult() { 
     var index; var minValue
-    var tableValue = table;
+    var tableValue = [];
+    for (var l = 0; l <= 36; l++) {
+        tableValue.push(table[l]);
+    }
     tableValue.sort(function (a, b) {
         return a.totalAmount - b.totalAmount;
     });
@@ -96,6 +104,40 @@ function generateResult() {
                 }
             }
             index = getRandomInt(0, tableValue.length);
+            var first12bids = table[37].bids;
+            var second12bids = table[38].bids;
+            var third12Bids = table[39].bids;
+            var first = table[40].bids;
+            var second = table[41].bids;
+            var third = table[42].bids;
+            var even = table[43].bids;
+            var odd = table[44].bids;
+            var black = table[45].bids;
+            var red = table[46].bids;
+            var oneToEighteen = table[47].bids;
+            var nineteenToThirtySix = table[48].bids;
+            if (index >= 1 && index <= 12) {
+                first12bids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+    
+                });
+            }
+            if (index >= 13 && index <= 24) {
+                second12bids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+                });
+            }
+            if (index >= 25 && index <= 36) {
+                third12Bids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+                });
+            }
             io.sockets.emit('result', { result: tableValue[index] });
             startNewGame();
             
@@ -116,7 +158,11 @@ function generateResult() {
         startNewGame();
     }
 }
+
+
 //Socket Logic
+startNewGame();
+
 setInterval(function () {
     if (countdown <= 0) { 
         isBidExpecting = false;
@@ -127,7 +173,6 @@ setInterval(function () {
     countdown--;
     io.sockets.emit('timer', { countdown: countdown })
 }, 1000);
-startNewGame();
 io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query.id);
@@ -148,13 +193,13 @@ io.on('connection', (socket) => {
 
     socket.on('bid', function (bid) {
         if (isBidExpecting == true) {
-        
         var id = bid.id;
         var amount = bid.amount;
         var index = bid.index;
         Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
             if (player) { 
                 var newBid = new Bid(amount, id);
+                console.log(newBid);
                 table[index].bids.push(newBid);
                 table[index].totalAmount = table[index].totalAmount + amount;
                 socket.emit('bidStatus', { message: 'Bid Placed' });
@@ -162,7 +207,6 @@ io.on('connection', (socket) => {
                 socket.emit('bidStatus', { message: 'Error Placing Bid' });
 
             }
-           
         });
         } else if (isBidExpecting == false) {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
