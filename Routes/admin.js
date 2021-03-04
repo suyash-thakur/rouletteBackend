@@ -251,12 +251,12 @@ router.post('/getInfo', (req, res) => {
             res.status(200).json(data);
         });
     }
-    else if (req.body.type == 'AreaAdmin') {
+    else if (req.body.type == 'Area Admin') {
         AreaAdmin.find({ _id: req.body.id }).then(data => {
             res.status(200).json(data);
         });
     }
-    else if (req.body.type == 'MasterAdmin') {
+    else if (req.body.type == 'Master Admin') {
         MasterAdmin.find({ _id: req.body.id }).then(data => {
             res.status(200).json(data);
         });
