@@ -245,6 +245,27 @@ router.post('/superRequest', (req, res) => {
     });
 });
 
+router.post('/getInfo', (req, res) => {
+    if (req.body.type == 'Player') {
+        Player.find({ _id: req.body.id }).then(data => {
+            res.status(200).json(data);
+        });
+    }
+    else if (req.body.type == 'AreaAdmin') {
+        AreaAdmin.find({ _id: req.body.id }).then(data => {
+            res.status(200).json(data);
+        });
+    }
+    else if (req.body.type == 'MasterAdmin') {
+        MasterAdmin.find({ _id: req.body.id }).then(data => {
+            res.status(200).json(data);
+        });
+    }
+    else { 
+        res.status(200).json('Undefined Type');
+    }
+});
+
 router.get('/superRequest', (req, res) => {
     SuperRequest.find({ }).then(request => { 
         res.status(200).json(request);

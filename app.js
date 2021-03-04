@@ -47,7 +47,9 @@ var table = [];
 var isBidExpecting = false;
 var RedIndex = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 var blackIndex = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33];
-
+var first = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34];
+var second = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
+var third = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 
 // Game Function
 function getRandomInt(min, max) {
@@ -107,15 +109,15 @@ function generateResult() {
             var first12bids = table[37].bids;
             var second12bids = table[38].bids;
             var third12Bids = table[39].bids;
-            var first = table[40].bids;
-            var second = table[41].bids;
-            var third = table[42].bids;
-            var even = table[43].bids;
-            var odd = table[44].bids;
-            var black = table[45].bids;
-            var red = table[46].bids;
-            var oneToEighteen = table[47].bids;
-            var nineteenToThirtySix = table[48].bids;
+            var firstBids = table[40].bids;
+            var secondBids = table[41].bids;
+            var thirdBids = table[42].bids;
+            var evenBids = table[43].bids;
+            var oddBids = table[44].bids;
+            var blackBids = table[45].bids;
+            var redBids = table[46].bids;
+            var oneToEighteenBids = table[47].bids;
+            var nineteenToThirtySixBids = table[48].bids;
             if (index >= 1 && index <= 12) {
                 first12bids.forEach(async function (item) {
                     var amount = item.value;
@@ -133,6 +135,27 @@ function generateResult() {
             }
             if (index >= 25 && index <= 36) {
                 third12Bids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+                });
+            }
+            if (first.includes(index)) { 
+                firstBids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+                });
+            }
+            if (second.includes(index)) { 
+                secondBids.forEach(async function (item) {
+                    var amount = item.value;
+                    amount = amount * 3;
+                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+                });
+            }
+            if (third.includes(index)) { 
+                thirdBids.forEach(async function (item) {
                     var amount = item.value;
                     amount = amount * 3;
                     await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
