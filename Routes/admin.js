@@ -246,6 +246,7 @@ router.post('/superRequest', (req, res) => {
 });
 
 router.post('/getInfo', (req, res) => {
+    console.log(req.body);
     if (req.body.type == 'Player') {
         Player.find({ _id: req.body.id }).then(data => {
             res.status(200).json(data);
