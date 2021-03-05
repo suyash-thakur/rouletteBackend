@@ -254,12 +254,14 @@ router.post('/getInfo', (req, res) => {
     }
     else if (req.body.type == 'Area Admin') {
         AreaAdmin.find({ _id: req.body.id }).then(data => {
+            console.log(data[0]);
             res.status(200).json(data[0]);
         });
     }
     else if (req.body.type == 'Master Admin') {
         MasterAdmin.find({ _id: req.body.id }).then(data => {
             var result = data[0];
+            console.log(result);
             res.status(200).json(result);
         });
     }
