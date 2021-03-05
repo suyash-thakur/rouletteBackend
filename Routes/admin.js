@@ -200,6 +200,7 @@ router.post('/playerRequest', async (req, res) => {
 });
 
 router.get('/areaRequest/:id', (req, res) => {
+    console.log("request reached");
     AreaRequest.find({ areaAdmin: req.params.id }).then(request => { 
         res.status(200).json(request);
     })
