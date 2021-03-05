@@ -249,17 +249,17 @@ router.post('/getInfo', (req, res) => {
     console.log(req.body);
     if (req.body.type == 'Player') {
         Player.find({ _id: req.body.id }).then(data => {
-            res.status(200).json(data);
+            res.status(200).json(data[0]);
         });
     }
     else if (req.body.type == 'Area Admin') {
         AreaAdmin.find({ _id: req.body.id }).then(data => {
-            res.status(200).json(data);
+            res.status(200).json(data[0]);
         });
     }
     else if (req.body.type == 'Master Admin') {
         MasterAdmin.find({ _id: req.body.id }).then(data => {
-            res.status(200).json(data);
+            res.status(200).json(data[0]);
         });
     }
     else { 
