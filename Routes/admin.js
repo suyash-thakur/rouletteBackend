@@ -259,6 +259,7 @@ router.post('/getInfo', (req, res) => {
     }
     else if (req.body.type == 'Master Admin') {
         MasterAdmin.find({ _id: req.body.id }).then(data => {
+            console.log(data);
             res.status(200).json(data[0]);
         });
     }
