@@ -254,7 +254,6 @@ router.post('/getInfo', (req, res) => {
     }
     else if (req.body.type == 'Area Admin') {
         AreaAdmin.find({ _id: req.body.id }).then(data => {
-            console.log(data[0]);
             res.status(200).json(data[0]);
         });
     }
@@ -271,6 +270,7 @@ router.post('/getInfo', (req, res) => {
 });
 
 router.get('/superRequest', (req, res) => {
+    console.log("request recieved");
     SuperRequest.find({ }).then(request => { 
         res.status(200).json(request);
     })
