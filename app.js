@@ -50,7 +50,8 @@ var blackIndex = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33
 var first = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34];
 var second = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
 var third = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
-
+var isAdminResult = false;
+var adminIndex = 0;
 // Game Function
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -162,6 +163,7 @@ function startNewGame() {
     table = [];
     countdown = 60;
     counting = true;
+    isAdminResult = false;
     isBidExpecting = true;
     for (var i = 0; i <= 36; i++) {
         var option = new Option(i);
@@ -206,13 +208,21 @@ async function generateResult() {
                     tableValue.splice(j, 1);
                 }
             }
-            index = getRandomInt(0, tableValue.length);
+            if (isAdminResult === false) {
+                index = getRandomInt(0, tableValue.length);
+            } else if (isAdminResult === true) {
+                index = adminIndex;
+            }
             await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
             startNewGame();
             
         } else {
-            index = getRandomInt(0, tableValue.length);
+            if (isAdminResult === false) {
+                index = getRandomInt(0, tableValue.length);
+            } else if (isAdminResult === true) {
+                index = adminIndex;
+            }
             await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
             startNewGame();
@@ -224,7 +234,11 @@ async function generateResult() {
                 tableValue.splice(k, 1);
             }
         }
-        index = getRandomInt(0, tableValue.length);
+        if (isAdminResult === false) {
+            index = getRandomInt(0, tableValue.length);
+        } else if (isAdminResult === true) {
+            index = adminIndex;
+        }
         await createResult(index);
         io.sockets.emit('result', { result: tableValue[index] });
         startNewGame();
@@ -287,7 +301,10 @@ io.on('connection', (socket) => {
     });
 
 
-
+    socket.on('changeResult', function (data) {
+        isAdminResult = true;
+        adminIndex = data.index;
+    });
     socket.on('disconnect', function () {
         console.log('Player Disconnected');
         delete players[thisPlayerID];
