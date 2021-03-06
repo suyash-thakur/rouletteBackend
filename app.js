@@ -262,6 +262,7 @@ setInterval(function () {
 io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query.id);
+    console.log("Connection Made");
 
     Player.find({ _id: socket.handshake.query.id }).then(player => {
         if (player) {
