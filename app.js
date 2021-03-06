@@ -57,6 +57,107 @@ function getRandomInt(min, max) {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function createResult(index) {
+    var first12bids = table[37].bids;
+    var second12bids = table[38].bids;
+    var third12Bids = table[39].bids;
+    var firstBids = table[40].bids;
+    var secondBids = table[41].bids;
+    var thirdBids = table[42].bids;
+    var evenBids = table[43].bids;
+    var oddBids = table[44].bids;
+    var blackBids = table[45].bids;
+    var redBids = table[46].bids;
+    var oneToEighteenBids = table[47].bids;
+    var nineteenToThirtySixBids = table[48].bids;
+    if (index >= 1 && index <= 12) {
+        first12bids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+
+        });
+    }
+    if (index >= 13 && index <= 24) {
+        second12bids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (index >= 25 && index <= 36) {
+        third12Bids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (first.includes(index)) { 
+        firstBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (second.includes(index)) { 
+        secondBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (third.includes(index)) { 
+        thirdBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 3;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (index % 2 === 0 && index === 0) {
+        evenBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (index % 2 !== 0 && index === 0) {
+        oddBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (RedIndex.includes(index)) {
+        redBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (blackIndex.includes(index)) {
+        blackBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (index >= 1 && index <= 18) {
+        oneToEighteenBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+    if (index >= 19 && index <= 36) {
+        nineteenToThirtySixBids.forEach(async function (item) {
+            var amount = item.value;
+            amount = amount * 2;
+            await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+        });
+    }
+}
+
 function startNewGame() { 
     table = [];
     countdown = 60;
@@ -80,7 +181,7 @@ function startNewGame() {
     table.push(new Option('19-36')); // 48
 }
 
-function generateResult() { 
+async function generateResult() { 
     var index; var minValue
     var tableValue = [];
     for (var l = 0; l <= 36; l++) {
@@ -106,66 +207,13 @@ function generateResult() {
                 }
             }
             index = getRandomInt(0, tableValue.length);
-            var first12bids = table[37].bids;
-            var second12bids = table[38].bids;
-            var third12Bids = table[39].bids;
-            var firstBids = table[40].bids;
-            var secondBids = table[41].bids;
-            var thirdBids = table[42].bids;
-            var evenBids = table[43].bids;
-            var oddBids = table[44].bids;
-            var blackBids = table[45].bids;
-            var redBids = table[46].bids;
-            var oneToEighteenBids = table[47].bids;
-            var nineteenToThirtySixBids = table[48].bids;
-            if (index >= 1 && index <= 12) {
-                first12bids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-    
-                });
-            }
-            if (index >= 13 && index <= 24) {
-                second12bids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-                });
-            }
-            if (index >= 25 && index <= 36) {
-                third12Bids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-                });
-            }
-            if (first.includes(index)) { 
-                firstBids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-                });
-            }
-            if (second.includes(index)) { 
-                secondBids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-                });
-            }
-            if (third.includes(index)) { 
-                thirdBids.forEach(async function (item) {
-                    var amount = item.value;
-                    amount = amount * 3;
-                    await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
-                });
-            }
+            await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
             startNewGame();
             
         } else {
             index = getRandomInt(0, tableValue.length);
+            await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
             startNewGame();
         }
@@ -177,6 +225,7 @@ function generateResult() {
             }
         }
         index = getRandomInt(0, tableValue.length);
+        await createResult(index);
         io.sockets.emit('result', { result: tableValue[index] });
         startNewGame();
     }
