@@ -11,7 +11,7 @@
     TEST CLIENT FOR SCOKET.IO
 </body>
 <script>
-    const socket = io("http://localhost:3000/", {query: 'id=r1mNH5Hed74'});
+    const socket = io("wss://arcane-ocean-49265.herokuapp.com/", {query: 'id=r1mNH5Hed74'});
     socket.on("connect", () => {
   console.log(socket.id); 
 });
