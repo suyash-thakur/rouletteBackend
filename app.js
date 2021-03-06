@@ -297,9 +297,9 @@ io.on('connection', (socket) => {
         } else if (isBidExpecting == false) {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
     }
-
+        socket.emit('adminBidUpdate', table);
     });
-
+    
 
     socket.on('changeResult', function (data) {
         isAdminResult = true;
