@@ -32,7 +32,9 @@ mongoose.connect(connection_url, {
 });
 mongoose.set('useFindAndModify', false);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(cors());
 
 // Seperate module for REST API
@@ -260,8 +262,9 @@ setInterval(function () {
     io.sockets.emit('timer', countdown)
 }, 1000);
 io.on('connection', (socket) => {
+
     var thisPlayerID
-    console.log(socket.handshake.query.id);
+    console.log(socket.handshake.query);
     console.log("Connection Made");
 
     Player.find({ _id: socket.handshake.query.id }).then(player => {
