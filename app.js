@@ -287,6 +287,7 @@ io.on('connection', (socket) => {
 
 
     socket.on('bid', function (bid) {
+        console.log(bid);
         if (isBidExpecting == true) {
         var id = bid.id;
         var amount = bid.amount;
