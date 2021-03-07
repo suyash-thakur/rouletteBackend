@@ -159,6 +159,11 @@ function createResult(index) {
             await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
         });
     }
+    table[index].bids.forEach(async function (item) {
+        var amount = item.value;
+        amount = amount * 36;
+        await Player.findOneAndUpdate({ _id: item.player }, { $inc: { 'coins': amount } }).exec();
+    });
 }
 
 function startNewGame() { 
