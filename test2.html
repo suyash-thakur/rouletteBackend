@@ -5,19 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.2/socket.io.js" integrity="sha512-YybopSVjZU0fe8TY4YDuQbP5bhwpGBE/T6eBUEZ0usM72IWBfWrgVI13qfX4V2A/W7Hdqnm7PIOYOwP9YHnICw==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+
 </head>
 <body>
     TEST CLIENT FOR SCOKET.IO
 </body>
 <script>
     const socket = io("http://localhost:3000", {query: 'id=oL_ZnMAptAp'});
+    socket.emit("chat", 'qrLQgRh_n5z');
+
     socket.on("connect", (Event) => {
 
 });
 socket.on('connected',function(data)
 {
   console.log(data);
+  const bid = {
+  id: 'qrLQgRh_n5z',
+  amount: 50,
+  index: 5
+}
+socket.emit('bid', bid);
+
 });
 socket.on("timer", (timer) => {
   console.log(timer)
