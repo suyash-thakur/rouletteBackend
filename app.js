@@ -264,10 +264,14 @@ setInterval(function () {
 io.on('connection', (socket) => {
 
     var thisPlayerID
-    console.log(socket.handshake.query);
+    var queryString = [];
+    console.log(socket.handshake.query.id);
     console.log("Connection Made");
-
-    Player.find({ _id: socket.handshake.query.id }).then(player => {
+    socket.handshake.query.forEach(item => {
+        queryString.push(item);
+    });
+    console.log(queryString);
+    Player.find({ _id: socket.handshake.query }).then(player => {
         if (player) {
             var playerLive = new PlayerLive(player[0]._id, player[0].coins);
             players[playerLive.id] = playerLive;
