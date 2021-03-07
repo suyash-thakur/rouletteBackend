@@ -266,6 +266,9 @@ io.on('connection', (socket) => {
     var thisPlayerID
     console.log(socket.handshake.query);
     console.log("Connection Made");
+    socket.emit("chat", (data) => {
+        console.log(data);
+    })
 
     Player.find({ _id: socket.handshake.query.id }).then(player => {
         if (player) {
