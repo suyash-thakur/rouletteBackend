@@ -270,6 +270,7 @@ io.on('connection', (socket) => {
         console.log(data);
         Player.find({ _id: data }).then(player => {
             if (player) {
+                console.log(Player);
                 var playerLive = new PlayerLive(player[0]._id, player[0].coins);
                 players[playerLive.id] = playerLive;
                 thisPlayerID = playerLive.id;
