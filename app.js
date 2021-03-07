@@ -257,7 +257,7 @@ setInterval(function () {
     }
     if (!counting) return;
     countdown--;
-    io.sockets.emit('timer', { countdown: countdown })
+    io.sockets.emit('timer', countdown)
 }, 1000);
 io.on('connection', (socket) => {
     var thisPlayerID
