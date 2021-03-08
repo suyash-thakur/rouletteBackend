@@ -318,7 +318,11 @@ io.on('connection', (socket) => {
     }
     });
     
+    socket.on('adminDataUpdate', function (conf) {
+        console.log(conf);
+        socket.emit('adminBidUpdate', table);
 
+    })
     socket.on('changeResult', function (data) {
         isAdminResult = true;
         adminIndex = data.index;
