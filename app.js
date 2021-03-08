@@ -306,6 +306,8 @@ io.on('connection', (socket) => {
                 table[index].bids.push(newBid);
                 table[index].totalAmount = table[index].totalAmount + amount;
                 socket.emit('bidStatus', { message: 'Bid Placed' });
+                socket.emit('adminBidUpdate', table);
+
             } else {
                 socket.emit('bidStatus', { message: 'Error Placing Bid' });
 
@@ -314,7 +316,6 @@ io.on('connection', (socket) => {
         } else if (isBidExpecting == false) {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
     }
-        socket.emit('adminBidUpdate', table);
     });
     
 
