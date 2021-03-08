@@ -12,20 +12,24 @@
     TEST CLIENT FOR SCOKET.IO
 </body>
 <script>
-    const socket = io("wss://arcane-ocean-49265.herokuapp.com/", {query: 'id=r1mNH5Hed74'});
+    const socket = io("wss://arcane-ocean-49265.herokuapp.com/", {query: 'id=qrLQgRh_n5z'});
     socket.on("connect", () => {
   console.log(socket.id); 
 });
 socket.on("timer", (timer) => {
   console.log(timer);
 });
-const bid = {
-  id: 'r1mNH5Hed74',
+var bid = {
+  id: 'qrLQgRh_n5z',
   amount: 50,
   index: 5
 }
+bid = JSON.stringify(bid);
 socket.emit('bid', bid);
 socket.on("bidStatus", (status) => {
+  console.log(status);
+});
+socket.on("adminBidUpdate", (status) => {
   console.log(status);
 });
 
