@@ -306,6 +306,7 @@ io.on('connection', (socket) => {
                 table[index].bids.push(newBid);
                 table[index].totalAmount = table[index].totalAmount + amount;
                 socket.emit('adminBidUpdate', { table: table });
+                console.log("bid emit");
                 socket.emit('bidStatus', { message: 'Bid Placed' });
 
             } else {
