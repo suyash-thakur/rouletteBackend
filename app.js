@@ -306,7 +306,7 @@ io.on('connection', (socket) => {
                 table[index].bids.push(newBid);
                 table[index].totalAmount = table[index].totalAmount + amount;
                 socket.emit('bidStatus', { message: 'Bid Placed' });
-                socket.emit('adminBidUpdate', table);
+                socket.emit('adminBidUpdate', { table: table });
 
             } else {
                 socket.emit('bidStatus', { message: 'Error Placing Bid' });
@@ -320,7 +320,7 @@ io.on('connection', (socket) => {
     
     socket.on('adminDataUpdate', function (conf) {
         console.log(conf);
-        socket.emit('adminBidUpdate', table);
+        socket.emit('adminBidUpdate', { table: table });
 
     })
     socket.on('changeResult', function (data) {
