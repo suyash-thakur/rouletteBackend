@@ -305,7 +305,7 @@ io.on('connection', (socket) => {
                 console.log(newBid);
                 table[index].bids.push(newBid);
                 table[index].totalAmount = table[index].totalAmount + amount;
-                emitBid();
+                socket.emit('adminBidUpdate', { table: table });
                 console.log("bid emit");
                 socket.emit('bidStatus', { message: 'Bid Placed' });
 
@@ -321,7 +321,7 @@ io.on('connection', (socket) => {
     
     socket.on('adminDataUpdate', function (conf) {
         console.log(conf);
-        emitBid();
+        socket.emit('adminBidUpdate', { table: table });
 
     })
     socket.on('changeResult', function (data) {
@@ -334,9 +334,6 @@ io.on('connection', (socket) => {
     });
 
 });
-function emitBid() {
-    io.socket.emit('adminBidUpdate', { table: table });
-}
 
   // Starting Server
 http.listen(process.env.PORT || 3000, function () {
