@@ -265,7 +265,7 @@ setInterval(function () {
     if (!counting) return;
     countdown--;
     io.sockets.emit('timer', countdown)
-    io.socket.emit('adminBidUpdate', { table: table });
+    io.sockets.emit('adminBidUpdate', { table: table });
 
 
 }, 1000);
@@ -282,13 +282,13 @@ io.on('connection', (socket) => {
                 var playerLive = new PlayerLive(data[0]._id, data[0].coins);
                 players[playerLive.id] = playerLive;
                 thisPlayerID = playerLive.id;
-    
+
                 socket.emit('connected', {message: 'Connected'});
             } else { 
                 socket.emit('connected', {message: 'ErrorConnecting'});
-    
+
             }
-      
+
         });
     })
 
