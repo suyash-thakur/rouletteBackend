@@ -323,7 +323,7 @@ io.on('connection', (socket) => {
     });
     socket.on('changeResult', function (data) {
         isAdminResult = true;
-        adminIndex = data.index;
+        adminIndex = data;
     });
     socket.on('disconnect', function () {
         console.log('Player Disconnected');
