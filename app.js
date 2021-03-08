@@ -265,6 +265,9 @@ setInterval(function () {
     if (!counting) return;
     countdown--;
     io.sockets.emit('timer', countdown)
+    io.socket.emit('adminBidUpdate', { table: table });
+
+
 }, 1000);
 io.on('connection', (socket) => {
 
@@ -318,12 +321,6 @@ io.on('connection', (socket) => {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
     }
     });
-    
-    socket.on('adminDataUpdate', function (conf) {
-        console.log(conf);
-        socket.emit('adminBidUpdate', { table: table });
-
-    })
     socket.on('changeResult', function (data) {
         isAdminResult = true;
         adminIndex = data.index;
