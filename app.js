@@ -54,6 +54,8 @@ var second = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
 var third = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 var isAdminResult = false;
 var adminIndex = 0;
+var capacity = 10;
+var queue = require('fixed-size-queue').create(capacity);
 // Game Function
 function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -222,6 +224,15 @@ async function generateResult() {
             }
             await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
+            let queueLength = queue.getCount();
+            if (queueLength < 10) {
+                queue.enqueue(tableValue[index]);
+            } else {
+                queue.dequeue();
+                queue.enqueue(tableValue[index]);
+            }
+            io.sockets.emit('resultPrev', { result: queue });
+
             startNewGame();
             
         } else {
@@ -232,6 +243,15 @@ async function generateResult() {
             }
             await createResult(index);
             io.sockets.emit('result', { result: tableValue[index] });
+            let queueLength = queue.getCount();
+            if (queueLength < 10) {
+                queue.enqueue(tableValue[index]);
+            } else {
+                queue.dequeue();
+                queue.enqueue(tableValue[index]);
+            }
+            io.sockets.emit('resultPrev', { result: queue });
+
             startNewGame();
         }
     } else {
@@ -248,6 +268,15 @@ async function generateResult() {
         }
         await createResult(index);
         io.sockets.emit('result', { result: tableValue[index] });
+        let queueLength = queue.getCount();
+        if (queueLength < 10) {
+            queue.enqueue(tableValue[index]);
+        } else {
+            queue.dequeue();
+            queue.enqueue(tableValue[index]);
+        }
+        io.sockets.emit('resultPrev', { result: queue });
+
         startNewGame();
     }
 }
@@ -292,31 +321,58 @@ io.on('connection', (socket) => {
         });
     })
 
+    socket.on('removeBid', function (bid) {
+        console.log(bid);
+        console.log(JSON.parse(bid));
+        var bidS = [];
+        bidS = JSON.parse(bid);
+        bidS.forEach(item => {
+            var id = item.id;
+            var amount = item.amount;
+            var index = item.index;
+            Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': (amount) } }).then(player => {
+                if (player) {
+                    for (var j = 0; j < table[index].bids.length; j++) {
+                        if (  table[index].bids[j].player == id && table[index].bids[j].value == amount) {
+                            table[index].bids.splice(j, 1);
+                        }
+                    }
+                    socket.emit('bidRemoveStatus', { message: 'Bid Removed' });
+                } else {
+                    socket.emit('bidStatus', { message: 'Error Placing Bid' });
 
+                }
+            });
+        });
+    });
 
     socket.on('bid', function (bid) {
         console.log(bid);
         console.log(JSON.parse(bid));
-        var bidS = JSON.parse(bid)
+        var bidS = [];
+         bidS = JSON.parse(bid)
         if (isBidExpecting == true) {
-        var id = bidS.id;
-        var amount = bidS.amount;
-        var index = bidS.index;
-        Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
-            if (player) { 
-                var newBid = new Bid(amount, id);
-                console.log(newBid);
-                table[index].bids.push(newBid);
-                table[index].totalAmount = table[index].totalAmount + amount;
-                socket.emit('adminBidUpdate', { table: table });
-                console.log("bid emit");
-                socket.emit('bidStatus', { message: 'Bid Placed' });
+            bidS.forEach(item => {
+                var id = item.id;
+                var amount = item.amount;
+                var index = item.index;
+                Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
+                    if (player) { 
+                        var newBid = new Bid(amount, id);
+                        console.log(newBid);
+                        table[index].bids.push(newBid);
+                        table[index].totalAmount = table[index].totalAmount + amount;
+                        socket.emit('adminBidUpdate', { table: table });
+                        console.log("bid emit");
+                        socket.emit('bidStatus', { message: 'Bid Placed' });
+        
+                    } else {
+                        socket.emit('bidStatus', { message: 'Error Placing Bid' });
+        
+                    }
+                });
+            })
 
-            } else {
-                socket.emit('bidStatus', { message: 'Error Placing Bid' });
-
-            }
-        });
         } else if (isBidExpecting == false) {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });
     }
