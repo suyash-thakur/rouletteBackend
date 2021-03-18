@@ -348,16 +348,14 @@ io.on('connection', (socket) => {
     });
 
     socket.on('bid', function (bid) {
-        console.log(bid);
-        // console.log(JSON.parse(bid));
-        var bidS = [];
-        bidS = bid;
+        console.log(JSON.parse(bid));
+        var bidS = JSON.parse(bid);
         // bidS = JSON.parse(bid);
         if (isBidExpecting == true) {
            
-                var id = bid.id;
-                var amount = bid.amount;
-                var index = bid.index;
+                var id = bidS.id;
+                var amount = bidS.amount;
+                var index = bidS.index;
                 Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
                     if (player) { 
                         var newBid = new Bid(amount, id);
