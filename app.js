@@ -326,36 +326,38 @@ io.on('connection', (socket) => {
         console.log(JSON.parse(bid));
         var bidS = [];
         bidS = JSON.parse(bid);
-        bidS.forEach(item => {
-            var id = item.id;
-            var amount = item.amount;
-            var index = item.index;
+        
+            var id = bid.id;
+        var index = bid.index;
+        var amount;
+        for (var i = 0; i < table[index].bids.length; i++) {
+            if (table[index].bids[i].player === id) {
+                amount = table[index].bids[i].value;
+            }
+        }
             Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': (amount) } }).then(player => {
                 if (player) {
-                    for (var j = 0; j < table[index].bids.length; j++) {
-                        if (  table[index].bids[j].player == id && table[index].bids[j].value == amount) {
-                            table[index].bids.splice(j, 1);
-                        }
-                    }
                     socket.emit('bidRemoveStatus', { message: 'Bid Removed' });
-                } else {
+
+                    }
+                 else {
                     socket.emit('bidStatus', { message: 'Error Placing Bid' });
 
                 }
             });
-        });
     });
 
     socket.on('bid', function (bid) {
         console.log(bid);
-        console.log(JSON.parse(bid));
+        // console.log(JSON.parse(bid));
         var bidS = [];
-         bidS = JSON.parse(bid)
+        bidS = bid;
+        // bidS = JSON.parse(bid);
         if (isBidExpecting == true) {
-            bidS.forEach(item => {
-                var id = item.id;
-                var amount = item.amount;
-                var index = item.index;
+           
+                var id = bid.id;
+                var amount = bid.amount;
+                var index = bid.index;
                 Player.findOneAndUpdate({ _id: id }, { $inc: { 'coins': -(amount) } }).then(player => {
                     if (player) { 
                         var newBid = new Bid(amount, id);
@@ -371,7 +373,6 @@ io.on('connection', (socket) => {
         
                     }
                 });
-            })
 
         } else if (isBidExpecting == false) {
             socket.emit('bidStatus', { message: 'Error Cannot Place Bid Now' });

@@ -16,8 +16,8 @@ const { request } = require("express");
 router.get('/', (req, res) => {
     res.status(200).json({ message: 'API Working' });
 });
-var SuperAdminUser = 'superAdm';
-var SuperAdminPass = 'superAdmPass';
+var SuperAdminUser = 'isTudgEADIVe';
+var SuperAdminPass = 'IbIEcUouNdiA';
 router.post('/createMaster', (req, res) => {
     const masterAdmin = new MasterAdmin({
         password: req.body.password

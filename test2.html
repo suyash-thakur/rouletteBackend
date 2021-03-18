@@ -32,5 +32,12 @@ socket.emit('bid', bid);
 socket.on("timer", (timer) => {
   console.log(timer)
 });
+    socket.on("resultPrev", (timer) => {
+      console.log(timer)
+    });
+
+    socket.on("result", (result) => {
+      console.log(result);
+    });
   </script>
 </html>
