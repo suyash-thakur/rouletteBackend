@@ -322,13 +322,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('removeBid', function (bid) {
-        console.log(bid);
-        console.log(JSON.parse(bid));
-        var bidS = [];
-        bidS = JSON.parse(bid);
+      
+        var bidS = JSON.parse(bid);
         
-            var id = bid.id;
-        var index = bid.index;
+            var id = bidS.id;
+        var index = bidS.index;
         var amount;
         for (var i = 0; i < table[index].bids.length; i++) {
             if (table[index].bids[i].player === id) {
@@ -341,7 +339,7 @@ io.on('connection', (socket) => {
 
                     }
                  else {
-                    socket.emit('bidStatus', { message: 'Error Placing Bid' });
+                    socket.emit('bidRemoveStatus', { message: 'Error Placing Bid' });
 
                 }
             });
