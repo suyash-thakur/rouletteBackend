@@ -43,6 +43,7 @@ app.use('/', admin);
 
 //Game Global Variable
 var players = [];
+
 var countdown = 60;
 var counting = false;
 var table = [];
@@ -195,6 +196,7 @@ function startNewGame() {
 async function generateResult() { 
     var index; var minValue
     var tableValue = [];
+    var resultArray = [];
     for (var l = 0; l <= 36; l++) {
         tableValue.push(table[l]);
     }
@@ -232,8 +234,11 @@ async function generateResult() {
                 queue.dequeue();
                 queue.enqueue(tableValue[index]);
             }
-            io.sockets.emit('resultPrev', { result: queue.container });
-
+             resultArray = [];
+            queue.container.forEach(item => {
+                resultArray.push(item.value);
+            });
+            io.sockets.emit('resultPrev', { result: resultArray });
             startNewGame();
             
         } else {
@@ -251,7 +256,11 @@ async function generateResult() {
                 queue.dequeue();
                 queue.enqueue(tableValue[index]);
             }
-            io.sockets.emit('resultPrev', { result: queue.container });
+             resultArray = [];
+            queue.container.forEach(item => {
+                resultArray.push(item.value);
+            });
+            io.sockets.emit('resultPrev', { result: resultArray });
 
             startNewGame();
         }
@@ -276,7 +285,11 @@ async function generateResult() {
             queue.dequeue();
             queue.enqueue(tableValue[index]);
         }
-        io.sockets.emit('resultPrev', { result: queue.container });
+         resultArray = [];
+        queue.container.forEach(item => {
+            resultArray.push(item.value);
+        });
+        io.sockets.emit('resultPrev', { result: resultArray });
 
         startNewGame();
     }
