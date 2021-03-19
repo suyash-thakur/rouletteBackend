@@ -201,6 +201,7 @@ async function generateResult() {
     tableValue.sort(function (a, b) {
         return a.totalAmount - b.totalAmount;
     });
+
     var sortedTable = tableValue;
     var prob = Math.random();
     if (prob <= -6.6) {
@@ -231,7 +232,7 @@ async function generateResult() {
                 queue.dequeue();
                 queue.enqueue(tableValue[index]);
             }
-            io.sockets.emit('resultPrev', { result: queue });
+            io.sockets.emit('resultPrev', { result: queue.container });
 
             startNewGame();
             
@@ -250,7 +251,7 @@ async function generateResult() {
                 queue.dequeue();
                 queue.enqueue(tableValue[index]);
             }
-            io.sockets.emit('resultPrev', { result: queue });
+            io.sockets.emit('resultPrev', { result: queue.container });
 
             startNewGame();
         }
@@ -275,7 +276,7 @@ async function generateResult() {
             queue.dequeue();
             queue.enqueue(tableValue[index]);
         }
-        io.sockets.emit('resultPrev', { result: queue });
+        io.sockets.emit('resultPrev', { result: queue.container });
 
         startNewGame();
     }
