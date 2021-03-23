@@ -56,6 +56,8 @@ var third = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 var isAdminResult = false;
 var adminIndex = 0;
 var capacity = 10;
+var resultArray = [];
+
 var queue = require('fixed-size-queue').create(capacity);
 // Game Function
 function getRandomInt(min, max) {
@@ -196,7 +198,6 @@ function startNewGame() {
 async function generateResult() { 
     var index; var minValue
     var tableValue = [];
-    var resultArray = [];
     for (var l = 0; l <= 36; l++) {
         tableValue.push(table[l]);
     }
@@ -226,18 +227,16 @@ async function generateResult() {
                 index = adminIndex;
             }
             await createResult(index);
-            io.sockets.emit('result', { result: tableValue[index] });
-            let queueLength = queue.getCount();
-            if (queueLength < 10) {
-                queue.enqueue(tableValue[index]);
+            if (resultArray.length < 10) {
+                resultArray.push(tableValue[index].value);
             } else {
-                queue.dequeue();
-                queue.enqueue(tableValue[index]);
+                  resultArray.shift();
+                resultArray.push(tableValue[index].value);
+
             }
-             resultArray = [];
-            queue.container.forEach(item => {
-                resultArray.push(item.value);
-            });
+        
+            io.sockets.emit('result', { result: tableValue[index] });
+
             io.sockets.emit('resultPrev', { result: resultArray });
             startNewGame();
             
@@ -248,18 +247,18 @@ async function generateResult() {
                 index = adminIndex;
             }
             await createResult(index);
-            io.sockets.emit('result', { result: tableValue[index] });
             let queueLength = queue.getCount();
-            if (queueLength < 10) {
-                queue.enqueue(tableValue[index]);
+            if (resultArray.length < 10) {
+                resultArray.push(tableValue[index].value);
+
             } else {
-                queue.dequeue();
-                queue.enqueue(tableValue[index]);
+                resultArray.shift();
+                resultArray.push(tableValue[index].value);
             }
-             resultArray = [];
-            queue.container.forEach(item => {
-                resultArray.push(item.value);
-            });
+
+       
+            io.sockets.emit('result', { result: tableValue[index] });
+
             io.sockets.emit('resultPrev', { result: resultArray });
 
             startNewGame();
@@ -278,17 +277,13 @@ async function generateResult() {
         }
         await createResult(index);
         io.sockets.emit('result', { result: tableValue[index] });
-        let queueLength = queue.getCount();
-        if (queueLength < 10) {
-            queue.enqueue(tableValue[index]);
+        if (resultArray.length < 10) {
+            resultArray.push(tableValue[index].value)
         } else {
-            queue.dequeue();
-            queue.enqueue(tableValue[index]);
+            resultArray.shift();
+            resultArray.push(tableValue[index].value);
         }
-         resultArray = [];
-        queue.container.forEach(item => {
-            resultArray.push(item.value);
-        });
+   
         io.sockets.emit('resultPrev', { result: resultArray });
 
         startNewGame();
@@ -326,7 +321,9 @@ io.on('connection', (socket) => {
                 players[playerLive.id] = playerLive;
                 thisPlayerID = playerLive.id;
 
-                socket.emit('connected', {message: 'Connected'});
+                socket.emit('connected', { message: 'Connected' });
+           
+                io.sockets.emit('resultPrev', { result: resultArray });
             } else { 
                 socket.emit('connected', {message: 'ErrorConnecting'});
 
