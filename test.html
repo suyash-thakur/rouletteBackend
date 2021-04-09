@@ -24,8 +24,7 @@ var bid = {
   amount: 50,
   index: 5
 }
-bid = JSON.stringify(bid);
-socket.emit('bid', bid);
+  bid = JSON.stringify(bid);
 socket.on("bidStatus", (status) => {
   console.log(status);
 });
@@ -36,5 +35,8 @@ socket.on("adminBidUpdate", (status) => {
 socket.on("result", (result) => {
 console.log(result);
 });
+  socket.on("resultPrev", (timer) => {
+    console.log(timer)
+  });
   </script>
 </html>

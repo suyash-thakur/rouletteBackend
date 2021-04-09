@@ -192,7 +192,8 @@ router.post('/playerRequest', async (req, res) => {
     console.log(areaAdminId);
     const areaRequest = new AreaRequest({
         player: req.body.playerId,
-        areaAdmin: areaAdminId[0].areaAdmin
+        areaAdmin: areaAdminId[0].areaAdmin,
+        amount: req.body.amount
     });
     areaRequest.save().then(request => {
         res.status(200).json(request);
@@ -217,7 +218,9 @@ router.post('/areaRequest', async (req, res) => {
 
     const masterRequest = new MasterRequest({
         areaAdmin: req.body.areaAdminId,
-        masterAdmin: masterAdmin[0].masterAdmin
+        masterAdmin: masterAdmin[0].masterAdmin,
+        amount: req.body.amount
+
     });
     masterRequest.save().then(request => {
         res.status(200).json(request);
@@ -239,7 +242,8 @@ router.put('/resolveMasterRequest/:id', (req, res) => {
 
 router.post('/superRequest', (req, res) => {
     const superRequest = new SuperRequest({
-        masterAdmin: req.body.masterAdminId
+        masterAdmin: req.body.masterAdminId,
+        amount: req.body.amount
     });
     superRequest.save().then(request => {
         res.status(200).json(request);
