@@ -1,7 +1,7 @@
 
 # Online Roullete
 
-An online roullete that brings the experience of casino to your mobile phone. Play with other players realtime and win some coins.
+An online roullete that brings the experience of casino to your mobile phone. Play with other players realtime and win some coins. Download the [APK](https://drive.google.com/file/d/1g41uG7IRM8kGiDzfw6HDEPB2cboSUFPz/view?usp=sharing) and give it a try.
 
 
 ## API Reference
